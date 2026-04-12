@@ -2,6 +2,7 @@ package com.vinylove.backend.entity;
 
 import jakarta.persistence.*; // JPA annotations
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity // Marks this class as a JPA entity
 @Table(name = "users") // Specifies the table name in the database
@@ -15,6 +16,7 @@ public class User {
     private String email;
 
     @Column(nullable = false, length = 255)
+    @JsonIgnore // Prevents the password from being serialized to JSON
     private String password;
 
     @Column(name = "first_name", nullable = false, length = 100)

@@ -3,6 +3,8 @@ package com.vinylove.backend.service;
 import com.vinylove.backend.entity.User;
 import com.vinylove.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import com.vinylove.backend.exception.EmailAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,15 +13,18 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User saveUser(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-            throw new IllegalArgumentException("Email déjà utilisé");
+            throw new EmailAlreadyExistsException("Email déjà utilisé");
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
