@@ -17,6 +17,9 @@ public class UserService {
     }
 
     public User saveUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email déjà utilisé");
+        }
         return userRepository.save(user);
     }
 
