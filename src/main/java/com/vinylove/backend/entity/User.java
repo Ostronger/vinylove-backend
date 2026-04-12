@@ -2,7 +2,7 @@ package com.vinylove.backend.entity;
 
 import jakarta.persistence.*; // JPA annotations
 import java.time.LocalDateTime;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity // Marks this class as a JPA entity
 @Table(name = "users") // Specifies the table name in the database
@@ -16,7 +16,7 @@ public class User {
     private String email;
 
     @Column(nullable = false, length = 255)
-    @JsonIgnore // Prevents the password from being serialized to JSON
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // Prevents the password from being serialized to JSON
     private String password;
 
     @Column(name = "first_name", nullable = false, length = 100)
@@ -25,8 +25,9 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private String role;
+    private Role role;
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
@@ -70,11 +71,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
