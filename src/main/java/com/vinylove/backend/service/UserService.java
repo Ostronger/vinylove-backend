@@ -5,6 +5,9 @@ import com.vinylove.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.vinylove.backend.exception.EmailAlreadyExistsException;
+import com.vinylove.backend.dto.LoginRequest;
+import com.vinylove.backend.dto.LoginResponse;
+import com.vinylove.backend.exception.InvalidCredentialsException;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,5 +45,29 @@ public class UserService {
 
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public LoginResponse login(LoginRequest loginRequest) {
+        
+        // Étape 1 : cherche l'utilisateur par email
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new InvalidCredentialsException("Email ou mot de passe incorrect"));
+        
+        // Étape 2 : vérifie que le mot de passe correspond
+        boolean passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+
+        if (!passwordMatches) {
+            throw new InvalidCredentialsException("Email ou mot de passe incorrect");
+        }
+
+        // Étape 3 : retourne les informations de l'utilisateur (sans le mot de passe)
+        return new LoginResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRole(),
+                "Connexion réussie"
+        );
     }
 }

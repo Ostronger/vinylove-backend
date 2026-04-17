@@ -1,5 +1,7 @@
 package com.vinylove.backend.controller;
 
+import com.vinylove.backend.dto.LoginRequest;
+import com.vinylove.backend.dto.LoginResponse;
 import com.vinylove.backend.entity.User;
 import com.vinylove.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +43,11 @@ public class UserController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+        LoginResponse response = userService.login(loginRequest);
+        return ResponseEntity.ok(response);
     }
 }
