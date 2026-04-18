@@ -1,6 +1,9 @@
 package com.vinylove.backend.config;
 
 import com.vinylove.backend.security.JwtAuthenticationFilter;
+
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,9 +37,26 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> 
+                                 // Log the authentication exception message for debugging
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
+                        
+                        .accessDeniedHandler((request, response, accessDeniedException) -> 
+                                // Log the access denied exception message for debugging
+                                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
+                        
+                )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/error").permitAll() // Permet à tous d'accéder à l'endpoint d'erreur
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                        
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/me/password").authenticated()
+                        
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")

@@ -2,28 +2,22 @@ package com.vinylove.backend.dto;
 
 import com.vinylove.backend.entity.Role;
 
-public class LoginResponse {
+public class UserProfileResponse {
     private Long id;
     private String email;
     private String firstName;
     private String lastName;
     private Role role;
-    private String message;
-    private String accessToken;
-    private String refreshToken; 
 
-    public LoginResponse() { // Constructeur par défaut
+    public UserProfileResponse() {
     }
 
-    public LoginResponse(Long id, String email, String firstName, String lastName, Role role, String message, String accessToken, String refreshToken) {
+    public UserProfileResponse(Long id, String email, String firstName, String lastName, Role role) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
-        this.message = message;
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
     }
 
     public Long getId() {
@@ -46,18 +40,6 @@ public class LoginResponse {
         return role;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -77,17 +59,4 @@ public class LoginResponse {
     public void setRole(Role role) {
         this.role = role;
     }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
 }

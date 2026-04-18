@@ -6,6 +6,9 @@ import com.vinylove.backend.entity.User;
 import com.vinylove.backend.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.vinylove.backend.dto.UserProfileResponse;
+import org.springframework.security.core.Authentication;
+import com.vinylove.backend.dto.ChangePasswordRequest;
 
 import java.util.List;
 
@@ -45,9 +48,27 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login") // Endpoint for user login
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         LoginResponse response = userService.login(loginRequest);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/me") // Endpoint to get the profile of the currently authenticated user
+    public ResponseEntity<UserProfileResponse> getCurrentUserProfile(Authentication authentication) {
+        String email = authentication.getName();
+        UserProfileResponse response = userService.getCurrentUserProfile(email);
+        return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/me/password") // Endpoint to change the password of the currently authenticated user
+    public ResponseEntity<String> changeCurrentUserPassword(
+            Authentication authentication,
+            @RequestBody ChangePasswordRequest request
+    ) {
+        String email = authentication.getName();
+        userService.changeCurrentUserPassword(email, request);
+        return ResponseEntity.ok("Mot de passe changé avec succès");        
+    }
+    
 }
