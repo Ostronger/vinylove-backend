@@ -60,5 +60,9 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
+    public String extractRole(String token) { // extrait le rôle de l'utilisateur à partir du token en accédant à la réclamation personnalisée "role"
+        return extractAllClaims(token).get("role", String.class);
+    }
+
 
 }
