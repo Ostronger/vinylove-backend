@@ -8,18 +8,20 @@ public class LoginResponse {
     private String firstName;
     private String lastName;
     private Role role;
-    private String message; 
+    private String message;
+    private String token; 
 
     public LoginResponse() { // Constructeur par défaut
     }
 
-    public LoginResponse(Long id, String email, String firstName, String lastName, Role role, String message) {
+    public LoginResponse(Long id, String email, String firstName, String lastName, Role role, String message, String token) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
         this.message = message;
+        this.token = token;
     }
 
     public Long getId() {
@@ -46,6 +48,10 @@ public class LoginResponse {
         return message;
     }
 
+    public String getToken() {
+        return token;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -68,6 +74,10 @@ public class LoginResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

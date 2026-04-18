@@ -2,11 +2,6 @@ spring:
   application:
     name: backend
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/vinylove
-    username: vinylove_user
-    password: 123Azerty
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,6 +9,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  profiles:
+    active: local
 
 server:
   port: 8080

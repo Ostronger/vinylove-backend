@@ -17,10 +17,12 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     public User saveUser(User user) {
@@ -60,6 +62,9 @@ public class UserService {
             throw new InvalidCredentialsException("Email ou mot de passe incorrect");
         }
 
+        // Génère un token JWT pour l'utilisateur connecté
+        String token = jwtService.generateToken(user.getEmail(), user.getRole().name());
+
         // Étape 3 : retourne les informations de l'utilisateur (sans le mot de passe)
         return new LoginResponse(
                 user.getId(),
@@ -67,7 +72,8 @@ public class UserService {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getRole(),
-                "Connexion réussie"
+                "Connexion réussie",
+                token
         );
     }
 }
