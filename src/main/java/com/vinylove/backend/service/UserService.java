@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.vinylove.backend.exception.EmailAlreadyExistsException;
 import com.vinylove.backend.dto.LoginRequest;
 import com.vinylove.backend.dto.LoginResponse;
+import com.vinylove.backend.dto.RefreshTokenRequest;
+import com.vinylove.backend.dto.RefreshTokenResponse;
 import com.vinylove.backend.dto.UpdateUserProfileRequest;
 import com.vinylove.backend.exception.InvalidCredentialsException;
 import com.vinylove.backend.dto.UserProfileResponse;
@@ -14,6 +16,7 @@ import com.vinylove.backend.exception.UserNotFoundException;
 import com.vinylove.backend.dto.ChangePasswordRequest;
 import com.vinylove.backend.exception.InvalidPasswordException;
 import com.vinylove.backend.entity.RefreshToken;
+import com.vinylove.backend.dto.LogoutRequest;
 
 
 import java.util.List;
@@ -143,5 +146,24 @@ public class UserService {
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword())); // Si le mot de passe actuel est correct, encode le nouveau mot de passe et le met à jour dans l'entité User
         userRepository.save(user);
+
+        refreshTokenService.revokeAllUserRefreshTokens(user); // Révoque tous les tokens de rafraîchissement associés à l'utilisateur pour forcer une nouvelle authentification avec le nouveau mot de passe
+    }
+
+    public RefreshTokenResponse refreshAccessToken(RefreshTokenRequest request) {
+        RefreshToken refreshToken = refreshTokenService.verifyRefreshToken(request.getRefreshToken());
+
+        User user = refreshToken.getUser();
+
+        String newAccessToken = jwtService.generateToken(user.getEmail(), user.getRole().name());
+
+        return new RefreshTokenResponse(
+                newAccessToken,
+                refreshToken.getToken()
+        );
+    }
+
+    public void logout(LogoutRequest request) {
+        refreshTokenService.revokeRefreshToken(request.getRefreshToken());
     }
 }

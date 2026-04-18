@@ -51,6 +51,8 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll() // Permet à tous d'accéder à l'endpoint d'erreur
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/refresh-token").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/users/logout").permitAll()
                         
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()

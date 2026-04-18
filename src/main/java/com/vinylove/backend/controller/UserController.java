@@ -4,11 +4,14 @@ import com.vinylove.backend.dto.LoginRequest;
 import com.vinylove.backend.dto.LoginResponse;
 import com.vinylove.backend.entity.User;
 import com.vinylove.backend.service.UserService;
+import com.vinylove.backend.dto.RefreshTokenRequest;
+import com.vinylove.backend.dto.RefreshTokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.vinylove.backend.dto.UserProfileResponse;
 import org.springframework.security.core.Authentication;
 import com.vinylove.backend.dto.ChangePasswordRequest;
+import com.vinylove.backend.dto.LogoutRequest;
 
 import java.util.List;
 
@@ -71,4 +74,15 @@ public class UserController {
         return ResponseEntity.ok("Mot de passe changé avec succès");        
     }
     
+    @PostMapping("/refresh-token") // Endpoint to refresh JWT tokens
+    public ResponseEntity<RefreshTokenResponse> refreshToken(@RequestBody RefreshTokenRequest request) {
+        RefreshTokenResponse response = userService.refreshAccessToken(request);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody LogoutRequest request) {
+        userService.logout(request);
+        return ResponseEntity.ok("Déconnexion réussie");
+}
 }
