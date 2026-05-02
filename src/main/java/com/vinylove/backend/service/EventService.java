@@ -63,4 +63,21 @@ public class EventService {
     public void deleteEvent(Long id) {
         eventRepository.deleteById(id);
     }
+
+    /**
+     * Met à jour un événement existant avec de nouvelles données.
+     *
+     * @param id           identifiant de l'événement à mettre à jour
+     * @param updatedEvent objet {@link Event} contenant les nouvelles données
+     * @return un {@link Optional} contenant l'événement mis à jour, ou vide si l'événement d'origine n'existe pas
+     */
+    public Optional<Event> updateEvent(Long id, Event updatedEvent) {
+        return eventRepository.findById(id).map(event -> {
+            event.setName(updatedEvent.getName());
+            event.setDescription(updatedEvent.getDescription());
+            event.setLocation(updatedEvent.getLocation());
+            event.setEventDate(updatedEvent.getEventDate());
+            return eventRepository.save(event);
+        });
+    }
 }

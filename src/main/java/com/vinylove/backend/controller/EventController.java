@@ -75,4 +75,18 @@ public class EventController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    /**
+     * Met à jour un événement existant par son identifiant.
+     *
+     * @param id identifiant de l'événement à mettre à jour
+     * @param updatedEvent objet {@link Event} contenant les nouvelles données
+     * @return 200 avec l'événement mis à jour, ou 404 si l'événement est introuvable
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent) {
+        return eventService.updateEvent(id, updatedEvent)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

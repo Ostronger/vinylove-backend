@@ -100,6 +100,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/events").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasRole("ADMIN")
 
+                        // Mise à jour d'événements réservée aux administrateurs
+                        .requestMatchers(HttpMethod.PUT, "/api/events/**").hasRole("ADMIN")
+
                         // Gestion des utilisateurs réservée aux administrateurs
                         .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
