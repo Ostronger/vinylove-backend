@@ -5,32 +5,67 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice // Marks this class as a global exception handler for REST controllers
+/**
+ * Gestionnaire global des exceptions pour tous les contrôleurs REST de l'application.
+ * Centralise la transformation des exceptions métier en réponses HTTP standardisées,
+ * évitant la duplication de la gestion d'erreurs dans chaque contrôleur.
+ */
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EmailAlreadyExistsException.class) // Handles EmailAlreadyExistsException
+    /**
+     * Gère les tentatives d'inscription ou de mise à jour avec un email déjà utilisé.
+     *
+     * @param ex exception contenant le message d'erreur
+     * @return réponse HTTP 409 (Conflict) avec le message d'erreur
+     */
+    @ExceptionHandler(EmailAlreadyExistsException.class)
     public ResponseEntity<String> handleEmailAlreadyExistsException(EmailAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
 
+    /**
+     * Gère les tentatives de connexion avec des identifiants incorrects.
+     *
+     * @param ex exception contenant le message d'erreur
+     * @return réponse HTTP 401 (Unauthorized) avec le message d'erreur
+     */
     @ExceptionHandler(InvalidCredentialsException.class)
     public ResponseEntity<String> handleInvalidCredentialsException(InvalidCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
+    /**
+     * Gère les accès à un utilisateur inexistant en base de données.
+     *
+     * @param ex exception contenant le message d'erreur
+     * @return réponse HTTP 404 (Not Found) avec le message d'erreur
+     */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
 
+    /**
+     * Gère les tentatives de changement de mot de passe avec un mot de passe actuel incorrect.
+     *
+     * @param ex exception contenant le message d'erreur
+     * @return réponse HTTP 400 (Bad Request) avec le message d'erreur
+     */
     @ExceptionHandler(InvalidPasswordException.class)
     public ResponseEntity<String> handleInvalidPasswordException(InvalidPasswordException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    /**
+     * Gère les tentatives de rafraîchissement ou de déconnexion avec un refresh token invalide,
+     * révoqué ou expiré.
+     *
+     * @param ex exception contenant le message d'erreur
+     * @return réponse HTTP 401 (Unauthorized) avec le message d'erreur
+     */
     @ExceptionHandler(InvalidRefreshTokenException.class)
     public ResponseEntity<String> handleInvalidRefreshTokenException(InvalidRefreshTokenException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
-
 }

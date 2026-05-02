@@ -16,54 +16,99 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration // cette annotation indique que cette classe contient des configurations Spring, ce qui permet à Spring de la détecter et de l'utiliser pour configurer les beans et les paramètres de sécurité
-@EnableWebSecurity // cette annotation active la sécurité web de Spring Security, ce qui permet de configurer les règles de sécurité pour les requêtes HTTP entrantes
-@EnableConfigurationProperties(JwtProperties.class) // cette annotation indique que la classe JwtProperties doit être utilisée pour charger les propriétés de configuration liées au JWT, ce qui permet d'injecter ces propriétés dans les beans qui en ont besoin
+/**
+ * Configuration principale de la sécurité Spring Security.
+ * Définit la chaîne de filtres HTTP, les règles d'autorisation par route et par rôle,
+ * la politique de session sans état (stateless), et enregistre le filtre JWT.
+ */
+@Configuration
+@EnableWebSecurity
+@EnableConfigurationProperties(JwtProperties.class)
 public class SecurityConfig {
 
-    private final JwtAuthenticationFilter jwtAuthenticationFilter; // ce filtre est utilisé pour intercepter les requêtes HTTP entrantes, extraire le token JWT de l'en-tête d'autorisation, valider le token et configurer le contexte de sécurité si le token est valide
+    /** Filtre JWT injecté pour valider le token à chaque requête entrante. */
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) { // ce constructeur est utilisé pour injecter le JwtAuthenticationFilter dans la configuration de sécurité, ce qui permet de l'ajouter à la chaîne de filtres de Spring Security
+    /**
+     * Constructeur avec injection du filtre JWT.
+     *
+     * @param jwtAuthenticationFilter filtre responsable de l'extraction et de la validation du JWT
+     */
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    @Bean // cette annotation indique que cette méthode retourne un bean qui doit être géré par le conteneur Spring, ce qui permet d'injecter ce bean dans d'autres parties de l'application où un PasswordEncoder est nécessaire
+    /**
+     * Déclare le bean {@link PasswordEncoder} utilisant l'algorithme BCrypt.
+     * Utilisé pour hacher et vérifier les mots de passe des utilisateurs.
+     *
+     * @return une instance de {@link BCryptPasswordEncoder}
+     */
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean // cette annotation indique que cette méthode retourne un bean qui doit être géré par le conteneur Spring, ce qui permet d'injecter ce bean dans d'autres parties de l'application où une SecurityFilterChain est nécessaire pour configurer les règles de sécurité
+    /**
+     * Configure et retourne la chaîne de filtres de sécurité HTTP.
+     * <p>
+     * Règles appliquées :
+     * <ul>
+     *   <li>CSRF désactivé (API REST stateless)</li>
+     *   <li>Sessions non créées côté serveur (STATELESS)</li>
+     *   <li>Routes publiques : inscription, connexion, refresh-token, logout</li>
+     *   <li>Routes authentifiées : profil personnel, changement de mot de passe</li>
+     *   <li>Routes réservées ADMIN : gestion des événements et des utilisateurs</li>
+     * </ul>
+     *
+     * @param http objet de configuration Spring Security
+     * @return la {@link SecurityFilterChain} construite
+     * @throws Exception en cas d'erreur lors de la configuration
+     */
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((request, response, authException) -> 
-                                 // Log the authentication exception message for debugging
+                        // Retourne 401 si la requête n'est pas authentifiée
+                        .authenticationEntryPoint((request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized"))
-                        
-                        .accessDeniedHandler((request, response, accessDeniedException) -> 
-                                // Log the access denied exception message for debugging
+                        // Retourne 403 si l'utilisateur n'a pas les droits suffisants
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
                                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
-                        
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/error").permitAll() // Permet à tous d'accéder à l'endpoint d'erreur
+                        .requestMatchers("/error").permitAll()
+
+                        // Endpoints publics d'authentification
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/logout").permitAll()
-                        
+
+                        // Endpoints accessibles à tout utilisateur authentifié
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/me/password").authenticated()
-                        
+
+                        // Lecture des événements réservée aux utilisateurs connectés
+                        .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/events/**").authenticated()
+
+                        // Création et suppression d'événements réservées aux administrateurs
+                        .requestMatchers(HttpMethod.POST, "/api/events").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasRole("ADMIN")
+
+                        // Gestion des utilisateurs réservée aux administrateurs
                         .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
+                // Le filtre JWT s'exécute avant le filtre d'authentification standard de Spring
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
