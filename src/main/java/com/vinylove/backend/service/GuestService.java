@@ -7,8 +7,10 @@ import com.vinylove.backend.entity.Guest;
 import com.vinylove.backend.exception.EventNotFoundException;
 import com.vinylove.backend.exception.GuestAlreadyExistsException;
 import com.vinylove.backend.exception.InvalidGuestException;
+import com.vinylove.backend.exception.GuestNotFoundException;
 import com.vinylove.backend.repository.GuestRepository;
 import com.vinylove.backend.dto.GuestResponse;
+import com.vinylove.backend.dto.CheckInRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +45,8 @@ public class GuestService {
                 guest.isCheckedIn(),
                 guest.getEvent().getId(),
                 guest.getCreatedAt(),
-                guest.getUpdatedAt()
+                guest.getUpdatedAt(),
+                guest.getQrCode()
         );
     }
 
@@ -158,5 +161,29 @@ public class GuestService {
             Guest savedGuest = guestRepository.save(guest);
             return mapToGuestResponse(savedGuest);
         });
+    }
+
+    /**
+     * Effectue le check-in d'un invité en utilisant son code QR unique.
+     * Vérifie que l'invité existe et n'a pas déjà effectué son check-in avant de mettre à jour son statut.
+     *
+     * @param request objet {@link CheckInRequest} contenant le code QR de l'invité à enregistrer
+     * @return {@link GuestResponse} de l'invité après mise à jour du statut de check-in
+     * @throws GuestNotFoundException   si aucun invité ne correspond au code QR fourni
+     * @throws InvalidGuestException    si l'invité a déjà effectué son check-in
+     */
+    public GuestResponse checkInGuest(CheckInRequest request) {
+        Guest guest = guestRepository.findByQrCode(request.getQrCode())
+                .orElseThrow(() -> new GuestNotFoundException("Invité introuvable"));
+
+        if (guest.isCheckedIn()) {
+            throw new InvalidGuestException("Invité déjà enregistré");
+        }
+
+        guest.setCheckedIn(true);
+        
+        Guest savedGuest = guestRepository.save(guest);
+        
+        return mapToGuestResponse(savedGuest);
     }
 }

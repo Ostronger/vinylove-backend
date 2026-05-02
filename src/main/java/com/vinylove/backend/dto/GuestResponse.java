@@ -37,6 +37,9 @@ public class GuestResponse {
     /** Date et heure de la dernière mise à jour de l'enregistrement. */
     private LocalDateTime updatedAt;
 
+    /** Code QR unique généré pour chaque invité, utilisé pour le check-in. */
+    private String qrCode;
+
     public GuestResponse() {
     }
 
@@ -52,9 +55,10 @@ public class GuestResponse {
      * @param eventId   identifiant de l'événement associé
      * @param createdAt date de création de l'enregistrement
      * @param updatedAt date de dernière mise à jour de l'enregistrement
+     * @param qrCode    code QR de l'invité
      */
     public GuestResponse(Long id, String firstName, String lastName, String email, String phone,
-                         boolean checkedIn, Long eventId, LocalDateTime createdAt, LocalDateTime updatedAt) {
+                         boolean checkedIn, Long eventId, LocalDateTime createdAt, LocalDateTime updatedAt, String qrCode) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -64,6 +68,7 @@ public class GuestResponse {
         this.eventId = eventId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.qrCode = qrCode;
     }
 
     public Long getId() { return id; }
@@ -75,7 +80,7 @@ public class GuestResponse {
     public Long getEventId() { return eventId; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
-
+    public String getQrCode() { return qrCode; }
     public void setId(Long id) { this.id = id; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
     public void setLastName(String lastName) { this.lastName = lastName; }
@@ -85,4 +90,5 @@ public class GuestResponse {
     public void setEventId(Long eventId) { this.eventId = eventId; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setQrCode(String qrCode) { this.qrCode = qrCode; }
 }

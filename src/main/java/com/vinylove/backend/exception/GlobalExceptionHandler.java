@@ -102,4 +102,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     
     }
+
+    /**
+     * Gère les tentatives d'accès ou de modification d'un invité inexistant dans un événement.
+     *
+     * @param ex exception contenant le message d'erreur
+     * @return réponse HTTP 404 (Not Found) avec le message d'erreur
+     */
+    @ExceptionHandler(GuestNotFoundException.class)
+    public ResponseEntity<String> handleGuestNotFoundException(GuestNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 }

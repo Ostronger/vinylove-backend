@@ -5,6 +5,7 @@ import com.vinylove.backend.entity.Guest;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository JPA pour l'entité {@link Guest}.
@@ -31,4 +32,13 @@ public interface GuestRepository extends JpaRepository<Guest, Long> {
      * @return {@code true} si un invité avec cet email existe déjà pour cet événement, {@code false} sinon
      */
     boolean existsByEventAndEmail(Event event, String email);
+
+    /**
+     * Recherche un invité par son code QR unique.
+     * Utilisé pour le processus de check-in via le code QR.
+     *
+     * @param qrCode code QR de l'invité à rechercher
+     * @return {@link Optional} contenant l'invité trouvé, ou vide si aucun invité ne correspond au code QR
+     */
+    Optional<Guest> findByQrCode(String qrCode);
 }

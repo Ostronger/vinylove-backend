@@ -96,6 +96,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/events/**").authenticated()
 
+                        // Check-in des invités réservé au personnel (ADMIN et STAFF)
+                        .requestMatchers(HttpMethod.POST, "/api/events/*/guests/check-in").hasAnyRole("ADMIN", "STAFF")
+
                         // Création et suppression d'événements et guests réservées aux administrateurs
                         .requestMatchers(HttpMethod.POST, "/api/events/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasRole("ADMIN")

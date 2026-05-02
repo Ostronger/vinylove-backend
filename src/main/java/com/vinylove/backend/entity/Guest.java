@@ -3,6 +3,7 @@ package com.vinylove.backend.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Entité JPA représentant un invité (Guest) associé à un événement dans l'application Vinylove.
@@ -51,6 +52,10 @@ public class Guest {
     /** Date et heure de la dernière mise à jour de l'enregistrement, mise à jour automatiquement via {@link #preUpdate()}. */
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    /** Code QR unique généré pour chaque invité, utilisé pour le check-in. */
+    @Column(name = "qr_code", nullable = false, unique = true, length = 100)
+    private String qrCode;
 
     public Guest() {
     }
@@ -123,6 +128,14 @@ public class Guest {
         this.updatedAt = updatedAt;
     }
 
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
+    }
+
     /**
      * Initialise automatiquement la date de création avant le premier enregistrement en base.
      * Appelé par JPA via le cycle de vie {@code @PrePersist}.
@@ -131,6 +144,9 @@ public class Guest {
     protected void prePersist() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        if (this.qrCode == null || this.qrCode.isBlank()) {
+            this.qrCode = UUID.randomUUID().toString();
+        }
     }
 
     /**
