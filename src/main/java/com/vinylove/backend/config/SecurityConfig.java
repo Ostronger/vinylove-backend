@@ -92,15 +92,15 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/me/password").authenticated()
 
-                        // Lecture des événements réservée aux utilisateurs connectés
+                        // Lecture des événements  et guests réservée aux utilisateurs connectés
                         .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/events/**").authenticated()
 
-                        // Création et suppression d'événements réservées aux administrateurs
-                        .requestMatchers(HttpMethod.POST, "/api/events").hasRole("ADMIN")
+                        // Création et suppression d'événements et guests réservées aux administrateurs
+                        .requestMatchers(HttpMethod.POST, "/api/events/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/events/**").hasRole("ADMIN")
 
-                        // Mise à jour d'événements réservée aux administrateurs
+                        // Mise à jour d'événements et guests réservée aux administrateurs
                         .requestMatchers(HttpMethod.PUT, "/api/events/**").hasRole("ADMIN")
 
                         // Gestion des utilisateurs réservée aux administrateurs
