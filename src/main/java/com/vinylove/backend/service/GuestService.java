@@ -1,6 +1,8 @@
 package com.vinylove.backend.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 import com.vinylove.backend.entity.Event;
 import com.vinylove.backend.entity.Guest;
@@ -11,7 +13,9 @@ import com.vinylove.backend.exception.GuestNotFoundException;
 import com.vinylove.backend.repository.GuestRepository;
 import com.vinylove.backend.dto.GuestResponse;
 import com.vinylove.backend.dto.CheckInRequest;
+import com.vinylove.backend.dto.CheckInResponse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +50,8 @@ public class GuestService {
                 guest.getEvent().getId(),
                 guest.getCreatedAt(),
                 guest.getUpdatedAt(),
-                guest.getQrCode()
+                guest.getQrCode(),
+                guest.getCheckedInAt()
         );
     }
 
@@ -181,9 +186,35 @@ public class GuestService {
         }
 
         guest.setCheckedIn(true);
+        guest.setCheckedInAt(java.time.LocalDateTime.now());
         
         Guest savedGuest = guestRepository.save(guest);
         
         return mapToGuestResponse(savedGuest);
+    }
+
+    @Transactional
+    public CheckInResponse checkInByQrCode(String qrCode) {
+        Guest guest = guestRepository.findByQrCode(qrCode)
+                .orElseThrow(() -> new GuestNotFoundException("Invité introuvable"));
+
+        if (guest.isCheckedIn()) {
+            throw new InvalidGuestException("Invité déjà enregistré");
+        }
+
+        guest.setCheckedIn(true);
+        guest.setCheckedInAt(LocalDateTime.now());
+
+        Guest savedGuest = guestRepository.save(guest);
+
+        return new CheckInResponse(
+                "Entrée validée",
+                savedGuest.getId(),
+                savedGuest.getFirstName() + " " + savedGuest.getLastName(),
+                savedGuest.getEvent().getId(),
+                savedGuest.getEvent().getName(),
+                savedGuest.isCheckedIn(),
+                savedGuest.getCheckedInAt()
+        );
     }
 }

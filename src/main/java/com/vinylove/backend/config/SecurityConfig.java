@@ -79,7 +79,9 @@ public class SecurityConfig {
                                 response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden"))
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // Endpoints publics accessibles sans authentification
                         .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/check-in").permitAll()
 
                         // Endpoints publics d'authentification
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()

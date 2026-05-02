@@ -40,6 +40,9 @@ public class GuestResponse {
     /** Code QR unique généré pour chaque invité, utilisé pour le check-in. */
     private String qrCode;
 
+    /** Date et heure du check-in de l'invité, définie lors du processus de check-in. */
+    private LocalDateTime checkedInAt;
+
     public GuestResponse() {
     }
 
@@ -56,9 +59,10 @@ public class GuestResponse {
      * @param createdAt date de création de l'enregistrement
      * @param updatedAt date de dernière mise à jour de l'enregistrement
      * @param qrCode    code QR de l'invité
+     * @param checkedInAt date et heure du check-in de l'invité
      */
     public GuestResponse(Long id, String firstName, String lastName, String email, String phone,
-                         boolean checkedIn, Long eventId, LocalDateTime createdAt, LocalDateTime updatedAt, String qrCode) {
+                         boolean checkedIn, Long eventId, LocalDateTime createdAt, LocalDateTime updatedAt, String qrCode, LocalDateTime checkedInAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -69,6 +73,7 @@ public class GuestResponse {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.qrCode = qrCode;
+        this.checkedInAt = checkedInAt;
     }
 
     public Long getId() { return id; }
@@ -80,6 +85,7 @@ public class GuestResponse {
     public Long getEventId() { return eventId; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public LocalDateTime getCheckedInAt() { return checkedInAt; }
     public String getQrCode() { return qrCode; }
     public void setId(Long id) { this.id = id; }
     public void setFirstName(String firstName) { this.firstName = firstName; }
@@ -91,4 +97,5 @@ public class GuestResponse {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
     public void setQrCode(String qrCode) { this.qrCode = qrCode; }
+    public void setCheckedInAt(LocalDateTime checkedInAt) { this.checkedInAt = checkedInAt; }
 }

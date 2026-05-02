@@ -57,6 +57,10 @@ public class Guest {
     @Column(name = "qr_code", nullable = false, unique = true, length = 100)
     private String qrCode;
 
+    /** Date et heure du check-in de l'invité, définie lors du processus de check-in. */
+    @Column (name = "checked_in_at")
+    private LocalDateTime checkedInAt;
+
     public Guest() {
     }
 
@@ -134,6 +138,14 @@ public class Guest {
 
     public void setQrCode(String qrCode) {
         this.qrCode = qrCode;
+    }
+
+    public LocalDateTime getCheckedInAt() {
+        return checkedInAt;
+    }
+
+    public void setCheckedInAt(LocalDateTime checkedInAt) {
+        this.checkedInAt = checkedInAt;
     }
 
     /**

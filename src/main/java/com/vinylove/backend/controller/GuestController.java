@@ -86,7 +86,9 @@ public class GuestController {
         GuestResponse guest = guestService.getGuestById(guestId)
                 .orElseThrow(() -> new RuntimeException("Invité introuvable"));
 
-        byte[] qrCodeImage = qrCodeService.generateQrCode(guest.getQrCode(), 300, 300);
+        String qrContent = "http://localhost:8080/api/check-in?code=" + guest.getQrCode();
+        
+        byte[] qrCodeImage = qrCodeService.generateQrCode(qrContent, 300, 300);
 
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
