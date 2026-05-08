@@ -13,7 +13,7 @@ import java.util.List;
  * la création et la suppression sont réservées aux administrateurs (configuré dans {@code SecurityConfig}).
  */
 @RestController
-@RequestMapping("/api/events")
+@RequestMapping("/api/events") 
 public class EventController {
 
     private final EventService eventService;
@@ -33,7 +33,7 @@ public class EventController {
      * @param event objet {@link Event} reçu dans le corps de la requête
      * @return l'événement persisté avec son identifiant généré
      */
-    @PostMapping
+    @PostMapping //(" POST /api/events")
     public Event createEvent(@RequestBody Event event) {
         return eventService.saveEvent(event);
     }
@@ -43,7 +43,7 @@ public class EventController {
      *
      * @return liste d'objets {@link Event}
      */
-    @GetMapping
+    @GetMapping //(" GET /api/events")
     public List<Event> getAllEvents() {
         return eventService.getAllEvents();
     }
@@ -54,7 +54,7 @@ public class EventController {
      * @param id identifiant de l'événement
      * @return 200 avec l'événement trouvé, ou 404 si inexistant
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{id}") //(" GET /api/events/{id}")
     public ResponseEntity<Event> getEventById(@PathVariable Long id) {
         return eventService.getEventById(id)
                 .map(ResponseEntity::ok)
@@ -67,7 +67,7 @@ public class EventController {
      * @param id identifiant de l'événement à supprimer
      * @return 204 si la suppression a réussi, ou 404 si l'événement est introuvable
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") //(" DELETE /api/events/{id}")
     public ResponseEntity<Void> deleteEvent(@PathVariable Long id) {
         if (eventService.getEventById(id).isPresent()) {
             eventService.deleteEvent(id);
@@ -83,7 +83,7 @@ public class EventController {
      * @param updatedEvent objet {@link Event} contenant les nouvelles données
      * @return 200 avec l'événement mis à jour, ou 404 si l'événement est introuvable
      */
-    @PutMapping("/{id}")
+    @PutMapping("/{id}") //(" PUT /api/events/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent) {
         return eventService.updateEvent(id, updatedEvent)
                 .map(ResponseEntity::ok)

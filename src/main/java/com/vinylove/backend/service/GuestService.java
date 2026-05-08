@@ -2,6 +2,7 @@ package com.vinylove.backend.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
 
 import com.vinylove.backend.entity.Event;
@@ -30,6 +31,11 @@ public class GuestService {
 
     private final GuestRepository guestRepository;
     private final EventService eventService;
+    private final EmailService emailService;
+
+    @Value("${app.frontend.base-url}")
+    private String BaseUrl;
+
 
     /**
      * Convertit une entité {@link Guest} en DTO {@link GuestResponse}.
@@ -60,10 +66,12 @@ public class GuestService {
      *
      * @param guestRepository repository JPA pour l'accès aux données des invités
      * @param eventService    service événement pour la résolution de l'événement parent
+     * @param emailService    service email pour l'envoi de notifications
      */
-    public GuestService(GuestRepository guestRepository, EventService eventService) {
+    public GuestService(GuestRepository guestRepository, EventService eventService, EmailService emailService) {
         this.guestRepository = guestRepository;
         this.eventService = eventService;
+        this.emailService = emailService;
     }
 
     /**
@@ -99,6 +107,24 @@ public class GuestService {
         guest.setCheckedIn(false);
 
         Guest savedGuest = guestRepository.save(guest);
+
+        if (savedGuest.getEmail() != null && !savedGuest.getEmail().isBlank()) {
+            String qrCodeUrl = BaseUrl 
+                    + "/api/events/"
+                    + event.getId()
+                    + "/guests/"
+                    + savedGuest.getId()
+                    + "/qr-code";
+
+            emailService.sendGuestInvitation(
+                    savedGuest.getEmail(),
+                    savedGuest.getFirstName() + " " + savedGuest.getLastName(),
+                    event.getName(),
+                    event.getEventDate().toString(),
+                    event.getLocation(),
+                    qrCodeUrl
+            );
+        }
         return mapToGuestResponse(savedGuest);
     }
 
