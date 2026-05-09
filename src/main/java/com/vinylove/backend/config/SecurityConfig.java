@@ -88,6 +88,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/logout").permitAll()
+                        
+                        // Endpoint public pour accéder au QR code d'invitation sans authentification (nécessaire pour les invités qui n'ont pas de compte utilisateur)
+                        .requestMatchers(HttpMethod.GET, "/api/events/*/guests/*/qr-code").permitAll()
 
                         // Endpoints accessibles à tout utilisateur authentifié
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()

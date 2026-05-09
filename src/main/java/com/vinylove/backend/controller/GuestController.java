@@ -5,9 +5,12 @@ import com.vinylove.backend.service.GuestService;
 import com.vinylove.backend.dto.GuestResponse;
 import com.vinylove.backend.dto.CheckInRequest;
 import com.vinylove.backend.service.QrCodeService;
+import com.vinylove.backend.service.InvitationPdfService;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.util.List;
 
@@ -23,11 +26,13 @@ public class GuestController {
     
     private final GuestService guestService;
     private final QrCodeService qrCodeService;
+    private final InvitationPdfService invitationPdfService;
 
     /** Constructeur avec injection du service invité. */
-    public GuestController(GuestService guestService, QrCodeService qrCodeService) {
+    public GuestController(GuestService guestService, QrCodeService qrCodeService, InvitationPdfService invitationPdfService) {
         this.guestService = guestService;
         this.qrCodeService = qrCodeService;
+        this.invitationPdfService = invitationPdfService;
     }
 
     /** Crée un nouvel invité pour un événement donné. */
@@ -93,5 +98,15 @@ public class GuestController {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
                 .body(qrCodeImage);
+    }
+
+    @GetMapping(value = "/{guestId}/invitation-pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> getGuestInvitationPdf(@PathVariable Long guestId) {
+        byte[] pdf = invitationPdfService.generateInvitationPdf(guestId);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=invitation-guest-" + guestId + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdf);
     }
 }

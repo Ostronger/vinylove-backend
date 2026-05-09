@@ -2,8 +2,6 @@ package com.vinylove.backend.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Value;
-
 
 import com.vinylove.backend.entity.Event;
 import com.vinylove.backend.entity.Guest;
@@ -32,9 +30,8 @@ public class GuestService {
     private final GuestRepository guestRepository;
     private final EventService eventService;
     private final EmailService emailService;
-
-    @Value("${app.frontend.base-url}")
-    private String BaseUrl;
+    private final QrCodeService qrCodeService;
+    private final InvitationPdfService invitationPdfService;
 
 
     /**
@@ -67,11 +64,15 @@ public class GuestService {
      * @param guestRepository repository JPA pour l'accès aux données des invités
      * @param eventService    service événement pour la résolution de l'événement parent
      * @param emailService    service email pour l'envoi de notifications
+     * @param qrCodeService   service QR code pour la génération des codes QR
+     * @param invitationPdfService service pour la génération du PDF d'invitation
      */
-    public GuestService(GuestRepository guestRepository, EventService eventService, EmailService emailService) {
+    public GuestService(GuestRepository guestRepository, EventService eventService, EmailService emailService, QrCodeService qrCodeService, InvitationPdfService invitationPdfService) {
         this.guestRepository = guestRepository;
         this.eventService = eventService;
         this.emailService = emailService;
+        this.qrCodeService = qrCodeService;
+        this.invitationPdfService = invitationPdfService;
     }
 
     /**
@@ -109,12 +110,13 @@ public class GuestService {
         Guest savedGuest = guestRepository.save(guest);
 
         if (savedGuest.getEmail() != null && !savedGuest.getEmail().isBlank()) {
-            String qrCodeUrl = BaseUrl 
-                    + "/api/events/"
-                    + event.getId()
-                    + "/guests/"
-                    + savedGuest.getId()
-                    + "/qr-code";
+            byte[] qrCodeImage = qrCodeService.generateQrCode(
+                    savedGuest.getQrCode(),
+                    300,
+                    300
+            );
+
+            byte[] invitationPdf = invitationPdfService.generateInvitationPdf(savedGuest.getId());
 
             emailService.sendGuestInvitation(
                     savedGuest.getEmail(),
@@ -122,7 +124,8 @@ public class GuestService {
                     event.getName(),
                     event.getEventDate().toString(),
                     event.getLocation(),
-                    qrCodeUrl
+                    qrCodeImage,
+                    invitationPdf
             );
         }
         return mapToGuestResponse(savedGuest);
