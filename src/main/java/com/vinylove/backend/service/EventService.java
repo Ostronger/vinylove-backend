@@ -77,7 +77,10 @@ public class EventService {
             event.setDescription(updatedEvent.getDescription());
             event.setLocation(updatedEvent.getLocation());
             event.setEventDate(updatedEvent.getEventDate());
+            event.setBannerImageUrl(updatedEvent.getBannerImageUrl());
             return eventRepository.save(event);
         });
     }
+
+
 }

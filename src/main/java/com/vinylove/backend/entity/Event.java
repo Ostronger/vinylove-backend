@@ -38,6 +38,10 @@ public class Event {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    /** URL de l'image de bannière pour l'événement, 500 caractères maximum. */
+    @Column(name = "banner_image_url", length = 500)
+    private String bannerImageUrl;
+
     public Event() { 
     }
 
@@ -63,6 +67,14 @@ public class Event {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public String getBannerImageUrl() {
+        return bannerImageUrl;
+    }
+
+    public void setBannerImageUrl(String bannerImageUrl) {
+        this.bannerImageUrl = bannerImageUrl;
     }
 
     public void setName(String name) {
