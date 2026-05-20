@@ -113,4 +113,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleGuestNotFoundException(GuestNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    /**
+    * Gère les tentatives de création ou de mise à jour d'une table d'invitation avec des données invalides
+    * (ex : nom de table manquant, capacité négative, etc.).
+    *
+    * @param ex exception contenant le message d'erreur
+    * @return réponse HTTP 400 (Bad Request) avec le message d'erreur
+    */
+    @ExceptionHandler(InvalidInvitationTableException.class)
+    public ResponseEntity<String> handleInvalidInvitationTableException(InvalidInvitationTableException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

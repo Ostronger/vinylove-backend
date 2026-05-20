@@ -223,7 +223,9 @@ import org.springframework.stereotype.Service;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import java.io.ByteArrayOutputStream;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
+import java.util.Locale;
 
 @Service
 public class InvitationPdfService {
@@ -255,7 +257,12 @@ public class InvitationPdfService {
 
             // Données événement
             String guestName    = guest.getFirstName() + " " + guest.getLastName();
-            String eventDate    = guest.getEvent().getEventDate().toString();
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("dd MMMM yyyy 'à' HH:mm", Locale.FRENCH);
+
+            String eventDate = guest.getEvent()
+                    .getEventDate()
+                    .format(formatter);
             String eventName    = guest.getEvent().getName();
             String eventLocation = guest.getEvent().getLocation();
 

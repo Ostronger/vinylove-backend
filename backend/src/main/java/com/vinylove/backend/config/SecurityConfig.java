@@ -15,6 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+
+import java.util.List;
 
 /**
  * Configuration principale de la sécurité Spring Security.
@@ -66,10 +72,29 @@ public class SecurityConfig {
      * @throws Exception en cas d'erreur lors de la configuration
      */
     @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Permet toutes les origines (à adapter en production)
+        
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Permet les méthodes HTTP courantes
+
+        configuration.setAllowedHeaders(List.of("*")); // Permet tous les headers (à adapter en production)
+
+        configuration.setAllowCredentials(true); // Permet l'envoi de cookies et d'authentification
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration); // Applique cette configuration à toutes les routes
+        return source;
+    }
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {}) // Permet la configuration CORS via un bean CorsConfigurationSource
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Ne crée pas de session côté serveur, chaque requête doit être authentifiée avec un token
                 .exceptionHandling(ex -> ex
                         // Retourne 401 si la requête n'est pas authentifiée
                         .authenticationEntryPoint((request, response, authException) ->
@@ -82,12 +107,14 @@ public class SecurityConfig {
                         // Endpoints publics accessibles sans authentification
                         .requestMatchers("/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/check-in").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/table-check-in").permitAll()
 
                         // Endpoints publics d'authentification
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/refresh-token").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/logout").permitAll()
+
                         
                         // Endpoint public pour accéder au QR code d'invitation sans authentification (nécessaire pour les invités qui n'ont pas de compte utilisateur)
                         .requestMatchers(HttpMethod.GET, "/api/events/*/guests/*/qr-code").permitAll()
@@ -96,6 +123,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/users/me/password").authenticated()
+
+                        // Gestion des tables d'invitation
+                        .requestMatchers(HttpMethod.GET, "/api/events/*/invitation-tables").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/events/*/invitation-tables").hasRole("ADMIN")
 
                         // Lecture des événements  et guests réservée aux utilisateurs connectés
                         .requestMatchers(HttpMethod.GET, "/api/events").authenticated()
