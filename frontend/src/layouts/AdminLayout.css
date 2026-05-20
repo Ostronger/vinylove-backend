@@ -1,0 +1,85 @@
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: #1b1d24;
+}
+
+/* ───────── SIDEBAR ───────── */
+
+.admin-sidebar {
+    width: 260px;
+    background-color: #120d14;
+    color: white;
+    padding: 32px 24px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.admin-sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 40px;
+    color: #C9A84C;
+    letter-spacing: 1px;
+}
+
+/* ───────── NAVIGATION ───────── */
+
+.admin-sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.admin-sidebar nav a {
+    text-decoration: none;
+    color: #d7d7d7;
+
+    padding: 12px 14px;
+    border-radius: 10px;
+
+    transition: 0.2s ease;
+    font-weight: 500;
+}
+
+.admin-sidebar nav a:hover {
+    background-color: #211726;
+    color: white;
+}
+
+/* ───────── LOGOUT ───────── */
+
+.admin-sidebar button {
+    border: none;
+    background-color: #C9A84C;
+    color: #120d14;
+
+    padding: 12px;
+    border-radius: 10px;
+
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.admin-sidebar button:hover {
+    opacity: 0.9;
+}
+
+/* ───────── MAIN ───────── */
+
+.admin-main {
+    flex: 1;
+    padding: 40px;
+    margin-left: 260px;
+    height: 100vh;
+    overflow-y: auto;
+}
