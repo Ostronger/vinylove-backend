@@ -76,7 +76,7 @@ public class SecurityConfig {
         
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // Permet toutes les origines (à adapter en production)
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","https://vinylove-backend.vercel.app")); // Permet toutes les origines (à adapter en production)
         
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Permet les méthodes HTTP courantes
 
