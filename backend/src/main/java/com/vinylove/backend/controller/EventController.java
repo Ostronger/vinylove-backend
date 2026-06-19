@@ -2,6 +2,9 @@ package com.vinylove.backend.controller;
 
 import com.vinylove.backend.entity.Event;
 import com.vinylove.backend.service.EventService;
+import com.vinylove.backend.dto.EventStatsResponse;
+import com.vinylove.backend.dto.InvitationTableStatsResponse;
+import com.vinylove.backend.service.AdminStatsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,14 +20,17 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+    private final AdminStatsService adminStatsService;
 
     /**
      * Constructeur avec injection du service événement.
      *
      * @param eventService service métier pour la gestion des événements
+     * @param adminStatsService service pour les statistiques administratives
      */
-    public EventController(EventService eventService) {
+    public EventController(EventService eventService, AdminStatsService adminStatsService) {
         this.eventService = eventService;
+        this.adminStatsService = adminStatsService;
     }
 
     /**
@@ -56,6 +62,16 @@ public class EventController {
     @GetMapping("/active")
     public List<Event> getActiveEvents() {
         return eventService.getActiveEvents();
+    }
+
+    @GetMapping("/{eventId}/stats")
+    public EventStatsResponse getStatsForEvent(@PathVariable Long eventId) {
+        return adminStatsService.getStatsForEvent(eventId);
+    }
+
+    @GetMapping("/{eventId}/tables/stats")
+    public List<InvitationTableStatsResponse> getTableStatsForEvent(@PathVariable Long eventId) {
+        return adminStatsService.getTableStatsForEvent(eventId);
     }
 
     /**

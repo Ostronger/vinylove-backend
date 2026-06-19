@@ -11,6 +11,7 @@ export default function AdminLayout() {
                     <Link to="/admin">Dashboard</Link>
                     <Link to="/admin/events">Événements</Link>
                     <Link to="/admin/scan">Scan</Link>
+                    <Link to="/admin/staff">Staff</Link>
                 </nav>
                 
                 <button onClick={() => {

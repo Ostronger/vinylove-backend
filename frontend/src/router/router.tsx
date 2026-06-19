@@ -11,7 +11,9 @@ import AdminLayout from "../layouts/AdminLayout";
 import StaffLayout from "../layouts/StaffLayout";
 import StaffScanPage from "../pages/staff/StaffScanPage";
 import StaffEventsPage from "../pages/staff/StaffEventsPage";
- 
+import StaffEventStatsPage from "../pages/staff/StaffEventStatsPage";
+import AdminStaffPage from "../pages/admin/AdminStaffPage";
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -37,7 +39,12 @@ const router = createBrowserRouter([
             {
                 path: "scan",
                 element: <AdminScanPage />
+            },
+            {
+                path: "staff",
+                element: <AdminStaffPage />
             }
+            
         ]
     },
     {
@@ -56,6 +63,10 @@ const router = createBrowserRouter([
             {
                 path: "events",
                 element: <StaffEventsPage />
+            },
+            {
+                path: "events/:eventId",
+                element: <StaffEventStatsPage />
             }
         ]
     }
