@@ -49,6 +49,16 @@ public class EventController {
     }
 
     /**
+     * Retourne la liste des événements actifs.
+     *
+     * @return liste d'objets {@link Event}
+     */
+    @GetMapping("/active")
+    public List<Event> getActiveEvents() {
+        return eventService.getActiveEvents();
+    }
+
+    /**
      * Retourne un événement par son identifiant.
      *
      * @param id identifiant de l'événement
@@ -86,6 +96,32 @@ public class EventController {
     @PutMapping("/{id}") //(" PUT /api/events/{id}")
     public ResponseEntity<Event> updateEvent(@PathVariable Long id, @RequestBody Event updatedEvent) {
         return eventService.updateEvent(id, updatedEvent)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Active un événement existant par son identifiant.
+     *
+     * @param id identifiant de l'événement à activer
+     * @return 200 avec l'événement activé, ou 404 si l'événement est introuvable
+     */
+    @PutMapping("/{id}/activate") //(" PUT /api/events/{id}/activate")
+    public ResponseEntity<Event> activateEvent(@PathVariable Long id) {
+        return eventService.activateEvent(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * Désactive un événement existant par son identifiant.
+     *
+     * @param id identifiant de l'événement à désactiver
+     * @return 200 avec l'événement désactivé, ou 404 si l'événement est introuvable
+     */
+    @PutMapping("/{id}/deactivate") //(" PUT /api/events/{id}/deactivate")
+    public ResponseEntity<Event> deactivateEvent(@PathVariable Long id) {
+        return eventService.deactivateEvent(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

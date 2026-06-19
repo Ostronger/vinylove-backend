@@ -9,6 +9,7 @@ type Event = {
     location: string;
     eventDate: string;
     bannerImageUrl?: string;
+    active: boolean;
 };
 
 export default function AdminEventsPage() {
@@ -22,7 +23,6 @@ export default function AdminEventsPage() {
     const [location, setLocation] = useState("");
     const [eventDate, setEventDate] = useState("");
     const [bannerImageUrl, setBannerImageUrl] = useState("");
-
     const [editingEventId, setEditingEventId] = useState<number | null>(null);
     
     const [editName, setEditName] = useState("");
@@ -176,6 +176,43 @@ export default function AdminEventsPage() {
         }
     };
 
+    const toggleEventActive = async (event: Event) => {
+        const token = localStorage.getItem("accessToken");
+
+        const endpoint = event.active ? "deactivate" : "activate";
+
+        const response = await fetch(`${API_URL}/api/events/${event.id}/${endpoint}`, {
+            method: "PUT",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (response.status === 401) {
+            localStorage.clear();
+            navigate("/");
+            return;
+        }
+
+        if (response.ok) {
+            const updatedEvent = await response.json();
+
+            setEvents((previousEvents) =>
+                previousEvents.map((currentEvent) =>
+                    currentEvent.id === updatedEvent.id ? updatedEvent : currentEvent
+                )
+            );
+
+            setSuccessMessage(
+                updatedEvent.active
+                    ? "Événement activé avec succès !"
+                    : "Événement désactivé avec succès !"
+            );
+        } else {
+            setErrorMessage("Erreur lors de la mise à jour de l'état de l'événement.");
+        }
+    };
+
     const startEditing = (event: Event) => {
         setEditingEventId(event.id);
         setEditName(event.name);
@@ -307,6 +344,10 @@ export default function AdminEventsPage() {
 
                                             <button onClick={() => handleDeleteEvent(event.id)}>
                                                 Supprimer
+                                            </button>
+
+                                            <button onClick={() => toggleEventActive(event)}>
+                                                {event.active ? "Désactiver" : "Activer"}
                                             </button>
                                         </div>
                                     </>

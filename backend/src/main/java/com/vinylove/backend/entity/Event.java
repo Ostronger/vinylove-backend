@@ -44,6 +44,11 @@ public class Event {
     @Column(name = "banner_image_url", length = 500)
     private String bannerImageUrl;
 
+    /** Indique si l'événement est actif ou non. Par défaut, un événement est inactif. */
+    @Column(nullable = false)
+    private boolean active = false;
+
+
     public Event() { 
     }
 
@@ -75,6 +80,10 @@ public class Event {
         return bannerImageUrl;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
     public void setBannerImageUrl(String bannerImageUrl) {
         this.bannerImageUrl = bannerImageUrl;
     }
@@ -97,6 +106,10 @@ public class Event {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     /**

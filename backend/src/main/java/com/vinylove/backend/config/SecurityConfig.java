@@ -151,6 +151,10 @@ public class SecurityConfig {
                         // Endpoint de test d'envoi d'emails réservé aux administrateurs
                         .requestMatchers(HttpMethod.POST, "/api/emails/test").hasRole("ADMIN")
 
+                        // Statistiques réservées aux administrateurs
+                        .requestMatchers(HttpMethod.GET, "/api/admin/stats").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/admin/stats/events").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 // Le filtre JWT s'exécute avant le filtre d'authentification standard de Spring

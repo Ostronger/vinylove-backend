@@ -82,5 +82,28 @@ public class EventService {
         });
     }
 
+    public Optional<Event> activateEvent(Long id) {
+        return eventRepository.findById(id)
+                .map(event -> {
+                    event.setActive(true);
+                    return eventRepository.save(event);
+                });
+    }
+
+    public Optional<Event> deactivateEvent(Long id) {
+        return eventRepository.findById(id)
+                .map(event -> {
+                    event.setActive(false);
+                    return eventRepository.save(event);
+                    });
+    }
+
+    public List<Event> getActiveEvents() {
+        return eventRepository.findAll()
+                .stream()
+                .filter(Event::isActive)
+                .toList();
+    }
+
 
 }

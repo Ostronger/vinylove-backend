@@ -10,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import AdminLayout from "../layouts/AdminLayout";
 import StaffLayout from "../layouts/StaffLayout";
 import StaffScanPage from "../pages/staff/StaffScanPage";
+import StaffEventsPage from "../pages/staff/StaffEventsPage";
  
 const router = createBrowserRouter([
     {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
             {
                 path: "scan",
                 element: <StaffScanPage />
+            },
+            {
+                path: "events",
+                element: <StaffEventsPage />
             }
         ]
     }
