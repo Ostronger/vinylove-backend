@@ -23,6 +23,10 @@ export default function InvitationTablesPage() {
     const [tables, setTables] = useState<InvitationTable[]>([]);
     const [eventName, setEventName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [editingTableId, setEditingTableId] = useState<number | null>(null);
+    const [editLabel, setEditLabel] = useState("");
+    const [editGuestText, setEditGuestText] = useState("");
+    const [editCapacity, setEditCapacity] = useState(1);
 
     const { eventId } = useParams();
     const navigate = useNavigate();
@@ -121,6 +125,73 @@ export default function InvitationTablesPage() {
         window.open(url, "_blank");
     };
 
+    const startEditingTable = (table: InvitationTable) => {
+        setEditingTableId(table.id);
+        setEditLabel(table.label);
+        setEditGuestText(table.guestText);
+        setEditCapacity(table.capacity);
+    };
+
+    const HandleUpdateTable = async () => {
+        const token = localStorage.getItem("accessToken");
+
+        const response = await fetch(`${API_URL}/api/events/${eventId}/invitation-tables/${editingTableId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                label: editLabel,
+                guestText: editGuestText,
+                capacity: editCapacity,
+            }),
+        });
+
+        if (response.status === 401) {
+            localStorage.clear();
+            navigate("/");
+            return;
+        }
+
+        if (response.ok) {
+            const updatedTable = await response.json();
+
+            setTables((prevTables) =>
+                prevTables.map((table) => (table.id === updatedTable.id ? updatedTable : table))
+            );
+
+            setEditingTableId(null);
+            setSuccessMessage("Table mise à jour avec succès !");
+        }
+    };
+
+    const handleDeleteTable = async (tableId: number) => {
+        const confirmDelete = window.confirm("Êtes-vous sûr de vouloir supprimer cette table ?");
+
+        if (!confirmDelete) return;
+
+        const token = localStorage.getItem("accessToken");
+
+        const response = await fetch(`${API_URL}/api/events/${eventId}/invitation-tables/${tableId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (response.status === 401) {
+            localStorage.clear();
+            navigate("/");
+            return;
+        }
+
+        if (response.ok) {
+            setTables((prevTables) => prevTables.filter((table) => table.id !== tableId));
+            setSuccessMessage("Table supprimée avec succès !");
+        }
+    };   
+
     return (
         <div className="tables-page">
             <div className="tables-header">
@@ -169,14 +240,50 @@ export default function InvitationTablesPage() {
                 <div className="tables-list">
                     {tables.map((table) => (
                         <div className="table-card" key={table.id}>
-                            <h3>{table.label}</h3>
-                            <p>{table.guestText}</p>
-                            <p>Capacité : {table.capacity}</p>
-                            <p>Scans : {table.scanCount}</p>
+                            {editingTableId === table.id ? (
+                                <>
+                                    <input
+                                        type="text"
+                                        value={editLabel}
+                                        onChange={(e) => setEditLabel(e.target.value)}
+                                    />
+                                    <textarea
+                                        value={editGuestText}
+                                        onChange={(e) => setEditGuestText(e.target.value)}
+                                    />
+                                    <input
+                                        type="number"
+                                        value={editCapacity}
+                                        onChange={(e) => setEditCapacity(Number(e.target.value))}
+                                    />
+                                    <button onClick={HandleUpdateTable}>
+                                        Sauvegarder
+                                    </button>
 
-                            <button onClick={() => downloadPdf(table.id)}>
-                                Télécharger PDF
-                            </button>
+                                    <button onClick={() => setEditingTableId(null)}>
+                                        Annuler
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <h3>{table.label}</h3>
+                                    <p>{table.guestText}</p>
+                                    <p>Capacité : {table.capacity}</p>
+                                    <p>Scans : {table.scanCount}</p>
+
+                                    <button onClick={() => startEditingTable(table)}>
+                                        Modifier
+                                    </button>
+                             
+                                    <button onClick={() => downloadPdf(table.id)}>
+                                        Télécharger PDF
+                                    </button>
+
+                                    <button onClick={() => handleDeleteTable(table.id)}>
+                                        Supprimer
+                                    </button>
+                               </>
+                            )}
                         </div>
                     ))}
                 </div>

@@ -108,4 +108,37 @@ public class InvitationTableService {
                 .orElseThrow(() ->
                         new InvalidInvitationTableException("Table d'invitation introuvable"));
     }
+
+    public InvitationTableResponse updateInvitationTable(
+            Long eventId,
+            Long tableId,
+            InvitationTable updatedTable
+    ) {
+        Event event = eventService.getEventById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Événement introuvable"));
+
+        InvitationTable invitationTable = invitationTableRepository.findById(tableId)
+                .orElseThrow(() ->
+                        new InvalidInvitationTableException("Table d'invitation introuvable"));
+
+        invitationTable.setLabel(updatedTable.getLabel());
+        invitationTable.setGuestText(updatedTable.getGuestText());
+        invitationTable.setCapacity(updatedTable.getCapacity());
+        invitationTable.setEvent(event);
+
+        InvitationTable savedTable = invitationTableRepository.save(invitationTable);
+
+        return mapToResponse(savedTable);
+    }
+
+    public void deleteInvitationTable(Long eventId, Long tableId) {
+        eventService.getEventById(eventId)
+                .orElseThrow(() -> new EventNotFoundException("Événement introuvable"));
+
+        InvitationTable invitationTable = invitationTableRepository.findById(tableId)
+                .orElseThrow(() ->
+                        new InvalidInvitationTableException("Table d'invitation introuvable"));
+
+        invitationTableRepository.delete(invitationTable);
+    }
 }

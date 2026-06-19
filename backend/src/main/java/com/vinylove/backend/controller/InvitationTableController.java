@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/events/{eventId}/invitation-tables")
 public class InvitationTableController {
@@ -45,5 +46,23 @@ public class InvitationTableController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=invitation-table-" + tableId + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdf);
+    }
+
+    @PutMapping("/{tableId}")
+    public InvitationTableResponse updateInvitationTable(
+            @PathVariable Long eventId,
+            @PathVariable Long tableId,
+            @RequestBody InvitationTable updatedTable
+    )  {
+        return invitationTableService.updateInvitationTable(eventId, tableId, updatedTable);
+    }
+
+    @DeleteMapping("/{tableId}")
+    public ResponseEntity<Void> deleteInvitationTable(
+            @PathVariable Long eventId,
+            @PathVariable Long tableId
+    ) {  
+        invitationTableService.deleteInvitationTable(eventId, tableId);
+        return ResponseEntity.noContent().build();
     }
 }

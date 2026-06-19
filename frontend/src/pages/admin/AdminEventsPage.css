@@ -117,3 +117,39 @@
     color: #120d14;
     margin-bottom: 8px;
 }
+
+.event-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.event-actions button,
+.event-actions a {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.event-actions button:last-child {
+    background-color: #dc2626;
+    color: white;
+}
+
+.event-actions button:last-child:hover {
+    background-color: #b91c1c;
+}
+
+.event-actions button:first-child {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.event-actions button:first-child:hover {
+    background-color: #d97706;
+}

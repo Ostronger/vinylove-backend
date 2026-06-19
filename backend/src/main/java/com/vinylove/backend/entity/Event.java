@@ -3,6 +3,8 @@ package com.vinylove.backend.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entité JPA représentant un événement dans l'application Vinylove.
@@ -105,4 +107,8 @@ public class Event {
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
     }
+
+    /** Liste des tables d'invitation associées à cet événement. */
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InvitationTable> invitationTables = new ArrayList<>();
 }

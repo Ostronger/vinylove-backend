@@ -23,6 +23,15 @@ export default function AdminEventsPage() {
     const [eventDate, setEventDate] = useState("");
     const [bannerImageUrl, setBannerImageUrl] = useState("");
 
+    const [editingEventId, setEditingEventId] = useState<number | null>(null);
+    
+    const [editName, setEditName] = useState("");
+    const [editDescription, setEditDescription] = useState("");
+    const [editLocation, setEditLocation] = useState("");
+    const [editEventDate, setEditEventDate] = useState("");
+    const [editBannerImageUrl, setEditBannerImageUrl] = useState("");
+    
+
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -104,6 +113,78 @@ export default function AdminEventsPage() {
         setIsLoading(false);
     };
 
+    const handleUpdateEvent = async () => {
+        const token = localStorage.getItem("accessToken");
+
+        const response = await fetch(`${API_URL}/api/events/${editingEventId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+                name: editName,
+                description: editDescription,
+                location: editLocation,
+                eventDate: editEventDate,
+                bannerImageUrl: editBannerImageUrl,
+            }),
+        });
+
+        if (response.ok) {
+            const updatedEvent = await response.json();
+
+            setEvents((previousEvents) =>
+                previousEvents.map((event) =>
+                    event.id === updatedEvent.id ? updatedEvent : event
+                )
+            );
+
+            setEditingEventId(null);
+            setSuccessMessage("Événement mis à jour avec succès !");
+        } else {
+            setErrorMessage("Erreur lors de la mise à jour de l'événement.");
+        }
+    };
+
+    const handleDeleteEvent = async (eventId: number) => {
+        const confirlDelete = window.confirm("Êtes-vous sûr de vouloir supprimer cet événement ?");
+        if (!confirlDelete) return;
+
+        const token = localStorage.getItem("accessToken");
+
+        const response = await fetch(`${API_URL}/api/events/${eventId}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        if (response.status === 401) {
+            localStorage.clear();
+            navigate("/");
+            return;
+        }
+
+        if (response.ok) {
+            setEvents((previousEvents) =>
+                previousEvents.filter((event) => event.id !== eventId)
+            );
+            setSuccessMessage("Événement supprimé avec succès !");
+        } else {
+            setErrorMessage("Erreur lors de la suppression de l'événement.");
+        }
+    };
+
+    const startEditing = (event: Event) => {
+        setEditingEventId(event.id);
+        setEditName(event.name);
+        setEditDescription(event.description);
+        setEditLocation(event.location);
+        setEditEventDate(event.eventDate);
+        setEditBannerImageUrl(event.bannerImageUrl || "");
+    };
+
     return (
         <div className="events-page">
             <div className="events-header">
@@ -168,16 +249,72 @@ export default function AdminEventsPage() {
                             )}
 
                             <div className="event-card-content">
-                                <h2>{event.name}</h2>
-                                <p>{event.location}</p>
-                                <p>{new Date(event.eventDate).toLocaleString("fr-FR")}</p>
+                                {editingEventId === event.id ? (
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={editName}
+                                            onChange={(e) => setEditName(e.target.value)}
+                                        />
 
-                                <Link to={`/admin/events/${event.id}/invitation-tables`}>
-                                    Gérer les tables
-                                </Link>
+                                        <input
+                                            type="text"
+                                            value={editLocation}
+                                            onChange={(e) => setEditLocation(e.target.value)}
+                                        />
+
+                                        <input
+                                            type="text"
+                                            value={editDescription}
+                                            onChange={(e) => setEditDescription(e.target.value)}
+                                        />
+
+                                        <input
+                                            type="datetime-local"
+                                            value={editEventDate}
+                                            onChange={(e) => setEditEventDate(e.target.value)}
+                                        />
+
+                                        <input
+                                            type="text"
+                                            value={editBannerImageUrl}
+                                            onChange={(e) => setEditBannerImageUrl(e.target.value)}
+                                        />
+
+                                        <button onClick={handleUpdateEvent}>
+                                            Sauvegarder
+                                        </button>
+
+                                        <button onClick={() => setEditingEventId(null)}>
+                                            Annuler
+                                        </button>
+                                    </>
+                                ) : (
+                                   <>
+                                        <h2>{event.name}</h2>
+                                        <p>{event.location}</p>
+                                        <p>{new Date(event.eventDate).toLocaleString("fr-FR")}</p>
+
+                                        <div className="event-actions">
+                                            <button onClick={() => startEditing(event)}>
+                                                Modifier
+                                            </button>
+                                       
+
+                                            <Link to={`/admin/events/${event.id}/invitation-tables`}>
+                                                Gérer les tables
+                                            </Link>
+
+                                            <button onClick={() => handleDeleteEvent(event.id)}>
+                                                Supprimer
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
                     ))}
+
                 </div>
             )}
         </div>
