@@ -9,7 +9,11 @@
 
 .admin-sidebar {
     width: 260px;
-    background-color: #120d14;
+    background: linear-gradient(
+        180deg,
+        #120d14 0%,
+        #19131d 100%
+    );
     color: white;
     padding: 32px 24px;
 
@@ -74,12 +78,61 @@
     opacity: 0.9;
 }
 
+.admin-sidebar nav .active {
+    background-color: #C9A84C;
+    color: #120d14;
+    font-weight: 600;
+}
+
 /* ───────── MAIN ───────── */
 
 .admin-main {
     flex: 1;
     padding: 40px;
     margin-left: 260px;
-    height: 100vh;
+    min-height: 100vh;
     overflow-y: auto;
+
+    background: linear-gradient(
+        180deg,
+        #1b1d24 0%,
+        #16181f 100%
+    );
+}
+
+.admin-main h1 {
+    color: white;
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+.admin-main h2 {
+    color: #C9A84C;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+
+    .admin-layout {
+        flex-direction: column;
+    }
+
+    .admin-sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 20px;
+    }
+
+    .admin-sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .admin-main {
+        margin-left: 0;
+        padding: 20px;
+        height: auto;
+    }
 }

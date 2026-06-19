@@ -1,20 +1,40 @@
 import { Link } from "react-router-dom";
+import "./StaffDashboardPage.css";
 
 export default function StaffDashboardPage() {
     return (
-        <div>
+        <div className="staff-dashboard">
             <h1>Dashboard Staff</h1>
-            <p>Accédez aux événements actifs et scannez les invitations.</p>
 
-            <Link to="/staff/events">
-                Voir les événements actifs
-            </Link>
+            <p className="staff-subtitle">
+                Gérez les accès et les événements actifs.
+            </p>
 
-            <br />
+            <div className="staff-actions">
 
-            <Link to="/staff/scan">
-                Scanner une invitation
-            </Link>
+                <Link
+                    to="/staff/events"
+                    className="staff-card"
+                >
+                    <h2>🎉 Événements actifs</h2>
+
+                    <p>
+                        Consulter les événements disponibles et leurs statistiques.
+                    </p>
+                </Link>
+
+                <Link
+                    to="/staff/scan"
+                    className="staff-card"
+                >
+                    <h2>📷 Scanner</h2>
+
+                    <p>
+                        Scanner ou saisir un QR code pour valider une entrée.
+                    </p>
+                </Link>
+
+            </div>
         </div>
     );
 }

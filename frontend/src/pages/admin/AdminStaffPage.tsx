@@ -94,10 +94,17 @@ export default function AdminStaffPage() {
     };
 
     return (
-        <div>
-            <h1>Gestion du staff</h1>
+    <div className="admin-staff-page">
 
-            <form onSubmit={handleCreateStaff}>
+        <h1>Gestion du staff</h1>
+
+        <form
+            className="staff-form"
+            onSubmit={handleCreateStaff}
+        >
+
+            <div className="staff-form-grid">
+
                 <input
                     type="text"
                     placeholder="Prénom"
@@ -126,20 +133,43 @@ export default function AdminStaffPage() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
-                <button type="submit">Créer un staff</button>
-            </form>
+            </div>
 
-            <h2>Liste des staffs</h2>
+            <button
+                type="submit"
+                className="staff-create-button"
+            >
+                Créer un staff
+            </button>
+
+        </form>
+
+        <h2>Liste des staffs</h2>
+
+        <div className="staff-list">
 
             {staffUsers.map((user) => (
-                <div key={user.id}>
-                    <p>
+                <div
+                    key={user.id}
+                    className="staff-card"
+                >
+                    <h3>
                         {user.firstName} {user.lastName}
-                    </p>
+                    </h3>
+
                     <p>{user.email}</p>
-                    <button onClick={() => handleDeleteStaff(user.id)}>Supprimer</button>
+
+                    <button
+                        className="staff-delete-button"
+                        onClick={() => handleDeleteStaff(user.id)}
+                    >
+                        Supprimer
+                    </button>
                 </div>
             ))}
+
         </div>
-    );
+
+    </div>
+);
 }

@@ -1,0 +1,38 @@
+.staff-dashboard h1 {
+    margin-bottom: 10px;
+}
+
+.staff-subtitle {
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+.staff-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.staff-card {
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 24px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+
+    transition: 0.2s ease;
+}
+
+.staff-card:hover {
+    transform: translateY(-4px);
+}
+
+.staff-card h2 {
+    margin-bottom: 10px;
+}

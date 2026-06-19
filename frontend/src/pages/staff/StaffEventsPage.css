@@ -1,0 +1,50 @@
+.staff-events h1 {
+    margin-bottom: 30px;
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.event-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.event-card h2 {
+    margin-bottom: 10px;
+}
+
+.event-location {
+    color: #6b7280;
+    margin-bottom: 8px;
+}
+
+.event-date {
+    color: #374151;
+    margin-bottom: 20px;
+}
+
+.event-link {
+    display: inline-block;
+
+    background: #2563eb;
+    color: white;
+
+    text-decoration: none;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+}
+
+.event-link:hover {
+    opacity: 0.9;
+}

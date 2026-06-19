@@ -1,4 +1,4 @@
-import { Link,Outlet } from "react-router-dom";
+import { NavLink,Outlet } from "react-router-dom";
 import "./AdminLayout.css";
 
 export default function AdminLayout() {
@@ -8,10 +8,10 @@ export default function AdminLayout() {
                 <h2>VinyLove Admin</h2>
 
                 <nav>
-                    <Link to="/admin">Dashboard</Link>
-                    <Link to="/admin/events">Événements</Link>
-                    <Link to="/admin/scan">Scan</Link>
-                    <Link to="/admin/staff">Staff</Link>
+                    <NavLink to="/admin" end>Dashboard</NavLink>
+                    <NavLink to="/admin/events">Événements</NavLink>
+                    <NavLink to="/admin/scan">Scan</NavLink>
+                    <NavLink to="/admin/staff">Staff</NavLink>
                 </nav>
                 
                 <button onClick={() => {

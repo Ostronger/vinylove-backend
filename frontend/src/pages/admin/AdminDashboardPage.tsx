@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./AdminDashboardPage.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -61,45 +62,54 @@ export default function AdminDashboardPage() {
     }, []);
 
     return (
-        <div>
-            <h1>Dashboard Admin</h1>
+    <div className="admin-dashboard">
+        <h1>Dashboard Admin</h1>
 
-            {stats && (
-                <>
-                    <div>
+        {stats && (
+            <>
+                <div className="admin-stats-grid">
+
+                    <div className="admin-stat-card">
                         <h3>Événements</h3>
                         <p>{stats.totalEvents}</p>
                     </div>
 
-                    <div>
+                    <div className="admin-stat-card">
                         <h3>Tables</h3>
                         <p>{stats.totalTables}</p>
                     </div>
 
-                    <div>
+                    <div className="admin-stat-card">
                         <h3>Capacité totale</h3>
                         <p>{stats.totalCapacity}</p>
                     </div>
 
-                    <div>
+                    <div className="admin-stat-card">
                         <h3>Entrées validées</h3>
                         <p>{stats.totalScans}</p>
                     </div>
 
-                    <div>
+                    <div className="admin-stat-card">
                         <h3>Places restantes</h3>
                         <p>{stats.remainingEntries}</p>
                     </div>
 
-                    <div>
+                    <div className="admin-stat-card">
                         <h3>Taux de remplissage</h3>
                         <p>{stats.fillRate}%</p>
                     </div>
 
-                    <h2>Statistiques par événement</h2>
+                </div>
+
+                <h2>Statistiques par événement</h2>
+
+                <div className="admin-events-stats">
 
                     {eventStats.map((event) => (
-                        <div key={event.eventId}>
+                        <div
+                            key={event.eventId}
+                            className="admin-event-card"
+                        >
                             <h3>{event.eventName}</h3>
 
                             <p>Capacité : {event.capacity}</p>
@@ -111,9 +121,10 @@ export default function AdminDashboardPage() {
                             <p>Taux de remplissage : {event.fillRate}%</p>
                         </div>
                     ))}
-                    
-                </>
-            )}
-        </div>
-    );
+
+                </div>
+            </>
+        )}
+    </div>
+);
 }

@@ -1,0 +1,175 @@
+.staff-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+/* ───────── SIDEBAR ───────── */
+
+.staff-sidebar {
+    width: 260px;
+    background: linear-gradient(
+        180deg,
+
+        #ffffff 0%,
+
+        #f7f8fb 100%
+
+    );
+
+    border-right: 1px solid #e5e7eb;
+
+    color: #1f2937;
+
+    padding: 32px 24px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.staff-sidebar h2 {
+
+    color: #b99230;
+
+    font-size: 24px;
+
+    margin-bottom: 40px;
+
+}
+
+/* ───────── NAVIGATION ───────── */
+
+.staff-sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.staff-sidebar nav a {
+
+    color: #4b5563;
+
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    transition: 0.2s ease;
+
+}
+
+.staff-sidebar nav a:hover {
+
+    background-color: #eef2ff;
+
+    color: #1e3a8a;
+
+}
+
+.staff-sidebar nav .active {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    font-weight: 600;
+}
+
+/* ───────── BOUTON ───────── */
+
+.staff-sidebar button {
+
+    background-color: #2563eb;
+
+    color: white;
+
+    border: none;
+
+    padding: 12px;
+
+    border-radius: 10px;
+
+    font-weight: 600;
+
+}
+
+/* ───────── MAIN ───────── */
+
+.staff-layout main {
+
+    flex: 1;
+
+    margin-left: 260px;
+
+    min-height: 100vh;
+
+    padding: 40px;
+
+    background-color: #f8fafc;
+
+    color: #111827;
+
+}
+
+@media (max-width: 900px) {
+
+    .staff-layout {
+        flex-direction: column;
+    }
+
+    .staff-sidebar {
+        position: relative;
+
+        width: 100%;
+        height: auto;
+
+        padding: 16px 20px;
+    }
+
+    .staff-sidebar h2 {
+        margin-bottom: 20px;
+    }
+
+    .staff-sidebar nav {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .staff-layout main {
+        margin-left: 0;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .staff-sidebar {
+        padding: 15px;
+    }
+
+    .staff-sidebar nav {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .staff-sidebar nav a {
+        text-align: center;
+    }
+
+    .staff-sidebar button {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .staff-layout main {
+        padding: 15px;
+    }
+
+    .staff-sidebar h2 {
+        font-size: 20px;
+        text-align: center;
+    }
+}

@@ -1,4 +1,5 @@
-import { Link, Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
+import "./StaffLayout.css";
 
 export default function StaffLayout() {
     const handleLogout = () => {
@@ -12,8 +13,12 @@ export default function StaffLayout() {
                 <h2>Viny Love</h2>
 
                 <nav>
-                    <Link to="/staff">Dashboard</Link>
-                    <Link to="/staff/scan">Scanner</Link>
+                    <NavLink to="/staff" end>
+                        Dashboard
+                    </NavLink>
+                    <NavLink to="/staff/scan">
+                        Scanner
+                    </NavLink>
                 </nav>
 
                 <button onClick={handleLogout}>

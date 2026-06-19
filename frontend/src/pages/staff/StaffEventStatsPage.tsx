@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./StaffEventStatsPage.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -68,37 +69,51 @@ export default function StaffEventStatsPage() {
     }
 
     return (
-        <div>
+        <div className="staff-event-stats">
             <h1>{stats.eventName}</h1>
 
-            <p>Capacité : {stats.capacity}</p>
+            <div className="stats-grid">
+                <div className="stat-card">
+                    <h3>Capacité</h3>
+                    <p>{stats.capacity}</p>
+                </div>
 
-            <p>Entrées : {stats.scans}</p>
+                <div className="stat-card">
+                    <h3>Entrées</h3>
+                    <p>{stats.scans}</p>
+                </div>
 
-            <p>Places restantes : {stats.remaining}</p>
+                <div className="stat-card">
+                    <h3>Restantes</h3>
+                    <p>{stats.remaining}</p>
+                </div>
 
-            <p>Taux de remplissage : {stats.fillRate}%</p>
-
+                <div className="stat-card">
+                    <h3>Taux</h3>
+                    <p>{stats.fillRate}%</p>
+                </div>
+            </div>
 
             <h2>Tables</h2>
 
-            {tableStats.map((table) => (
-                <div key={table.tableId}>
-                    <h3>{table.label}</h3>
+            <div className="tables-stats">
+                {tableStats.map((table) => (
+                    <div className="table-stat-card" key={table.tableId}>
+                        <h3>{table.label}</h3>
 
-                    <p>
-                        Entrées : {table.scans} / {table.capacity}
-                    </p>
+                        <p>Entrées : {table.scans} / {table.capacity}</p>
+                        <p>Places restantes : {table.remaining}</p>
+                        <p>Taux : {table.fillRate}%</p>
 
-                    <p>
-                        Places restantes : {table.remaining}
-                    </p>
-
-                    <p>
-                        Taux de remplissage : {table.fillRate}%
-                    </p>
-                </div>
-            ))}
+                        <div className="progress-bar">
+                            <div
+                                className="progress-fill"
+                                style={{ width: `${table.fillRate}%` }}
+                            />
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }

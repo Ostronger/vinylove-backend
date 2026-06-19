@@ -44,8 +44,12 @@ export default function AdminScanPage() {
     };
 
     return (
-        <div>
-            <h1>Scan des invitations</h1>
+        <div className="scan-page">
+            <h1>Scanner une invitation</h1>
+
+            <p className="scan-subtitle">
+                Scannez un QR code ou saisissez son identifiant.
+            </p>
 
             <QrScanner
                 onScanSuccess={(decodedText) => {
@@ -55,39 +59,31 @@ export default function AdminScanPage() {
             />
 
             <input
-
+                className="scan-input"
                 type="text"
-
                 placeholder="UUID du QR code"
-
                 value={qrCode}
-
                 onChange={(e) => setQrCode(e.target.value)}
-
             />
 
-            <button onClick={() => handleCheckIn()}>
-
+            <button
+                className="scan-button"
+                onClick={() => handleCheckIn()}
+            >
                 Valider
-
             </button>
 
             {error && <p>{error}</p>}
 
             {result && (
-
-                <div className = {result.accepted ? "scan-success" : "scan-error"}>
-
+                <div className={result.accepted ? "scan-success" : "scan-error"}>
                     <h3>{result.message}</h3>
 
                     <p>Table : {result.label}</p>
                     <p>Capacité : {result.capacity}</p>
                     <p>Scans : {result.scanCount}</p>
-                    <p>Accepté : {result.accepted ? "Oui" : "Non"}</p>
                     <p>Places restantes : {result.remainingEntries}</p>
-
                 </div>
-
             )}
         </div>
     );

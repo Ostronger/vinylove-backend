@@ -41,25 +41,35 @@ export default function StaffEventsPage() {
     }, []);
 
     return (
-        <div>
+        <div className="staff-events">
             <h1>Événements actifs</h1>
 
-            {events.map((event) => (
-                <div key={event.id}>
-                    <h2>{event.name}</h2>
+            <div className="events-grid">
+                {events.map((event) => (
+                    <div
+                        key={event.id}
+                        className="event-card"
+                    >
+                        <h2>{event.name}</h2>
 
-                    <p>{event.location}</p>
+                        <p className="event-location">
+                            📍{event.location}
+                        </p>
 
-                    <p>
-                        {new Date(event.eventDate).toLocaleString("fr-FR")}
-                    </p>
-                    
-                    <Link to={`/staff/events/${event.id}`}>
-                        Voir les statistiques
-                    </Link>
-                
-                </div>
-            ))}
+                        <p className="event-date">
+                            📅 {new Date(event.eventDate).toLocaleString("fr-FR")}
+                        </p>
+
+                        <Link
+                            to={`/staff/events/${event.id}`}
+                            className="event-link"
+                        >
+                            Voir les statistiques
+                        </Link>
+                    </div>
+                ))}
+            </div>
         </div>
+
     );
 }
