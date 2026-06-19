@@ -270,6 +270,7 @@ export default function InvitationTablesPage() {
                                     <p>{table.guestText}</p>
                                     <p>Capacité : {table.capacity}</p>
                                     <p>Scans : {table.scanCount}</p>
+                                    <p>QR Code : {table.qrCode}</p>
 
                                     <button onClick={() => startEditingTable(table)}>
                                         Modifier

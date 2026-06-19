@@ -1,0 +1,17 @@
+.scan-success {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #dcfce7;
+    border: 1px solid #22c55e;
+    color: #166534;
+}
+
+.scan-error {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+}
